@@ -1,0 +1,6 @@
+@BookedIn.WebApi_HostAddress = http://localhost:5210
+
+GET {{BookedIn.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
