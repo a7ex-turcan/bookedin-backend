@@ -14,7 +14,8 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
-    .AddServices();
+    .AddServices()
+    .AddAuthenticationServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -30,6 +31,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
