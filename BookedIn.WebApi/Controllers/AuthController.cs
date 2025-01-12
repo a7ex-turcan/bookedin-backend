@@ -1,6 +1,7 @@
 ﻿using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Models;
+using BookedIn.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,12 @@ namespace BookedIn.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public AuthController(ApplicationDbContext context)
+    public AuthController(ApplicationDbContext context, IPasswordHasher passwordHasher)
     {
         _context = context;
+        _passwordHasher = passwordHasher;
     }
 
     [HttpPost("signup")]
@@ -25,15 +28,15 @@ public class AuthController : ControllerBase
             return BadRequest("Email is already in use.");
         }
 
+        var hashedPassword = _passwordHasher.HashPassword(request.Password);
+
         var user = new User
         {
             Email = request.Email,
             FullName = request.FullName,
-            DateOfBirth = request.DateOfBirth
+            DateOfBirth = request.DateOfBirth,
+            PasswordHash = hashedPassword
         };
-
-        // Here you should hash the password before saving it
-        // For simplicity, we are skipping this step
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();

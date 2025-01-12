@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using BookedIn.WebApi.Data;
+using BookedIn.WebApi.Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure DbContext with PostgreSQL
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services
+    .AddDbContext<ApplicationDbContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    )
+    .AddServices();
 
 var app = builder.Build();
 
