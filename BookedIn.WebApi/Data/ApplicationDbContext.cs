@@ -10,6 +10,6 @@ namespace BookedIn.WebApi.Data
         }
 
         // Define your DbSets here. For example:
-        public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+        // public DbSet<WeatherForecast> WeatherForecasts { get; set; }
     }
 }
