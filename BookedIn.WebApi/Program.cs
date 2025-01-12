@@ -14,6 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
+// Apply migrations at startup
+app.ApplyMigrations();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
