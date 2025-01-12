@@ -36,6 +36,10 @@ namespace BookedIn.WebApi.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Email");
 
                     b.ToTable("Users");

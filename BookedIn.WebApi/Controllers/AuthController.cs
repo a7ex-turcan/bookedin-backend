@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
         {
             Email = request.Email,
             FullName = request.FullName,
-            DateOfBirth = request.DateOfBirth,
+            DateOfBirth = DateTime.SpecifyKind(request.DateOfBirth, DateTimeKind.Utc),
             PasswordHash = hashedPassword
         };
 
