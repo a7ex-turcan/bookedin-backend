@@ -14,7 +14,6 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
-    .AddServices()
     .AddAuthenticationServices(builder.Configuration);
 
 var app = builder.Build();

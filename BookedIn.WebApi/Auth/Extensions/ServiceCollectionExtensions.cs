@@ -7,16 +7,13 @@ namespace BookedIn.WebApi.Services.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services)
-    {
-        return services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
-    }
     
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
     {
         var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]??throw new Exception("Unable to find the Jwt:Key configuration value"));
 
         services
+            .AddSingleton<IPasswordHasher, BCryptPasswordHasher>()
             .AddScoped<ITokenService, TokenService>()
             .AddAuthentication(options =>
             {

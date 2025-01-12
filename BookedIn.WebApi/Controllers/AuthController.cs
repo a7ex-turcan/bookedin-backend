@@ -9,26 +9,21 @@ namespace BookedIn.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(
+    ApplicationDbContext context,
+    IPasswordHasher passwordHasher,
+    ITokenService tokenService
+) : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IPasswordHasher _passwordHasher;
-
-    public AuthController(ApplicationDbContext context, IPasswordHasher passwordHasher)
-    {
-        _context = context;
-        _passwordHasher = passwordHasher;
-    }
-
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp(SignUpRequest request)
     {
-        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+        if (await context.Users.AnyAsync(u => u.Email == request.Email))
         {
             return BadRequest("Email is already in use.");
         }
 
-        var hashedPassword = _passwordHasher.HashPassword(request.Password);
+        var hashedPassword = passwordHasher.HashPassword(request.Password);
 
         var user = new User
         {
@@ -38,9 +33,24 @@ public class AuthController : ControllerBase
             PasswordHash = hashedPassword
         };
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
         return Ok("User registered successfully.");
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginRequest request)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
+        
+        if (user == null || !passwordHasher.VerifyPassword(user.PasswordHash, request.Password))
+        {
+            return Unauthorized("Invalid email or password.");
+        }
+
+        var token = tokenService.GenerateToken(user);
+
+        return Ok(new LoginResponse { Token = token });
     }
 }
