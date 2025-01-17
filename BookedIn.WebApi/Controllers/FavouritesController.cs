@@ -41,49 +41,7 @@ public class FavouritesController(IUserBookFavouriteService userBookFavouriteSer
 
         return Ok(favourite);
     }
-
-    [HttpPost]
-    public async Task<ActionResult> Create(UserBookFavourite newFavourite)
-    {
-        var email = User.FindFirstValue(ClaimTypes.Email);
-        if (email == null)
-        {
-            return Unauthorized();
-        }
-
-        if (newFavourite.User.Email != email)
-        {
-            return BadRequest("You can only add favourites for your own account.");
-        }
-
-        await userBookFavouriteService.CreateAsync(newFavourite);
-        return CreatedAtAction(nameof(Get), new { id = newFavourite.Id }, newFavourite);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, UserBookFavourite updatedFavourite)
-    {
-        var email = User.FindFirstValue(ClaimTypes.Email);
-        if (email == null)
-        {
-            return Unauthorized();
-        }
-
-        var favourite = await userBookFavouriteService.GetAsync(id);
-        if (favourite == null || favourite.User.Email != email)
-        {
-            return NotFound();
-        }
-
-        if (updatedFavourite.User.Email != email)
-        {
-            return BadRequest("You can only update favourites for your own account.");
-        }
-
-        await userBookFavouriteService.UpdateAsync(id, updatedFavourite);
-        return NoContent();
-    }
-
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
