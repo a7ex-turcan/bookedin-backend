@@ -11,11 +11,10 @@ public class BooksController(IBookService bookService) : ControllerBase
     [HttpGet("search")]
     public async Task<ActionResult<List<Book>>> SearchBooks(
         string query,
-        [FromQuery] int? limit = 10,
-        CancellationToken cancellationToken = default
+        [FromQuery] int? limit = 10
     )
     {
-        var books = await bookService.SearchBooksAsync(query, limit, cancellationToken);
+        var books = await bookService.SearchBooksAsync(query, limit, HttpContext.RequestAborted);
         return Ok(books);
     }
 
