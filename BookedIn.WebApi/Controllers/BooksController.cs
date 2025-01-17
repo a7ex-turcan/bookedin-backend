@@ -9,9 +9,13 @@ namespace BookedIn.WebApi.Controllers;
 public class BooksController(IBookService bookService) : ControllerBase
 {
     [HttpGet("search")]
-    public async Task<ActionResult<List<Book>>> SearchBooks(string query, [FromQuery] int? limit = 10)
+    public async Task<ActionResult<List<Book>>> SearchBooks(
+        string query,
+        [FromQuery] int? limit = 10,
+        CancellationToken cancellationToken = default
+    )
     {
-        var books = await bookService.SearchBooksAsync(query, limit);
+        var books = await bookService.SearchBooksAsync(query, limit, cancellationToken);
         return Ok(books);
     }
 
