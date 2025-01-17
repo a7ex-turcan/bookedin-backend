@@ -7,10 +7,9 @@ public class UserBookFavouriteService : IUserBookFavouriteService
 {
     private readonly IMongoCollection<UserBookFavourite> _userBookFavourites;
 
-    public UserBookFavouriteService(IConfiguration config)
+    public UserBookFavouriteService(IMongoClient mongoClient)
     {
-        var client = new MongoClient(config.GetConnectionString("MongoConnection"));
-        var database = client.GetDatabase("bookedin");
+        var database = mongoClient.GetDatabase("bookedin");
         _userBookFavourites = database.GetCollection<UserBookFavourite>("UserBookFavourites");
     }
 

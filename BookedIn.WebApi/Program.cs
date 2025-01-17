@@ -1,6 +1,7 @@
 using BookedIn.WebApi.Auth.Extensions;
 using Microsoft.EntityFrameworkCore;
 using BookedIn.WebApi.Data;
+using BookedIn.WebApi.Mongo.Extensions;
 using BookedIn.WebApi.Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
+    .AddMongoClient(builder.Configuration)
     .AddUserBookFavouriteService()
     .AddAuthenticationServices(builder.Configuration);
 
