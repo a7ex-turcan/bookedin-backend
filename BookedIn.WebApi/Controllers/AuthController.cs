@@ -1,4 +1,5 @@
-﻿using BookedIn.WebApi.Data;
+﻿using BookedIn.WebApi.Auth;
+using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Models;
 using BookedIn.WebApi.Services;
