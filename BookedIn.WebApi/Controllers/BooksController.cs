@@ -17,9 +17,9 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
     
     [HttpGet("cover/{coverId}")]
-    public IActionResult GetCoverImage(int coverId)
+    public IActionResult GetCoverImage(int coverId, [FromQuery] string size = "L")
     {
-        var imageUrl = bookService.GetCoverImageUrl(coverId);
+        var imageUrl = bookService.GetCoverImageUrl(coverId, size);
         return Redirect(imageUrl);
     }
 }

@@ -35,8 +35,8 @@ public class OpenLibraryBookService(HttpClient httpClient) : IBookService
         return JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
     }
     
-    public string GetCoverImageUrl(int coverId)
+    public string GetCoverImageUrl(int coverId, string size)
     {
-        return $"https://covers.openlibrary.org/b/id/{coverId}-L.jpg";
+        return $"https://covers.openlibrary.org/b/id/{coverId}-{size}.jpg";
     }
 }

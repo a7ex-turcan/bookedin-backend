@@ -11,5 +11,5 @@ public interface IBookService
 
     Task<OpenApiBookDetails?> GetBookDetailsByIdAsync(string id);
     
-    string GetCoverImageUrl(int coverId);
+    string GetCoverImageUrl(int coverId, string size);
 }
