@@ -33,8 +33,6 @@ public class BookSearchService(HttpClient httpClient) : IBookSearchService
         response.EnsureSuccessStatusCode();
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
-        var bookDetails = JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
-
-        return bookDetails;
+        return JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
     }
 }
