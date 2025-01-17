@@ -27,13 +27,13 @@ public class BookSearchService(HttpClient httpClient) : IBookSearchService
                ?? new List<Book>();
     }
 
-    public async Task<BookDetails?> GetBookDetailsByIdAsync(string id)
+    public async Task<OpenApiBookDetails?> GetBookDetailsByIdAsync(string id)
     {
         var response = await httpClient.GetAsync($"https://openlibrary.org/works/{id}.json");
         response.EnsureSuccessStatusCode();
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
-        var bookDetails = JsonSerializer.Deserialize<BookDetails>(jsonResponse);
+        var bookDetails = JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
 
         return bookDetails;
     }

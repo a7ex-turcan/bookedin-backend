@@ -9,5 +9,5 @@ public interface IBookSearchService
 {
     Task<List<Book>> SearchBooksAsync(string query);
 
-    Task<BookDetails?> GetBookDetailsByIdAsync(string id);
+    Task<OpenApiBookDetails?> GetBookDetailsByIdAsync(string id);
 }
