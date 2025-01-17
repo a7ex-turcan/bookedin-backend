@@ -1,29 +1,40 @@
 ﻿using System.Text.Json;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Search.OpenLibrary;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace BookedIn.WebApi.Search;
 
 public class OpenLibraryBookService(HttpClient httpClient) : IBookService
 {
-    public async Task<List<Book>> SearchBooksAsync(string query)
+    public async Task<List<Book>> SearchBooksAsync(string query, int? limit)
     {
-        var response = await httpClient.GetAsync($"https://openlibrary.org/search.json?q={query}");
+        var queryParams = new Dictionary<string, string>
+        {
+            ["q"] = query.Replace(' ', '+')
+        };
+
+        if (limit.HasValue)
+        {
+            queryParams["limit"] = limit.Value.ToString();
+        }
+
+        var requestUri = QueryHelpers.AddQueryString("https://openlibrary.org/search.json", queryParams!);
+        var response = await httpClient.GetAsync(requestUri);
         response.EnsureSuccessStatusCode();
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         var searchResult = JsonSerializer.Deserialize<OpenLibrarySearchResult>(jsonResponse);
 
         return searchResult?.Docs.Select(
-                       doc => new Book(
-                           Author: string.Join(", ", (doc.AuthorNames ?? [])),
-                           Title: doc.Title,
-                           CoverId: doc.CoverId ?? 0,
-                           WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
-                       )
-                   )
-                   .ToList()
-               ?? new List<Book>();
+                doc => new Book(
+                    Author: string.Join(", ", (doc.AuthorNames ?? [])),
+                    Title: doc.Title,
+                    CoverId: doc.CoverId ?? 0,
+                    WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
+                )
+            )
+            .ToList() ?? new List<Book>();
     }
 
     public async Task<OpenApiBookDetails?> GetBookDetailsByIdAsync(string id)
@@ -34,7 +45,7 @@ public class OpenLibraryBookService(HttpClient httpClient) : IBookService
         var jsonResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
     }
-    
+
     public string GetCoverImageUrl(int coverId, string size)
     {
         return $"https://covers.openlibrary.org/b/id/{coverId}-{size}.jpg";
