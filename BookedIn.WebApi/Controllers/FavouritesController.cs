@@ -2,14 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using BookedIn.WebApi.Domain;
+using BookedIn.WebApi.Search;
 using BookedIn.WebApi.Services;
+using BookedIn.WebApi.Users;
 
 namespace BookedIn.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class FavouritesController(IUserBookFavouriteService userBookFavouriteService) : ControllerBase
+public class FavouritesController(
+    IUserBookFavouriteService userBookFavouriteService,
+    IUserService userService,
+    IBookSearchService bookSearchService
+) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserBookFavourite>>> Get()
@@ -41,7 +47,7 @@ public class FavouritesController(IUserBookFavouriteService userBookFavouriteSer
 
         return Ok(favourite);
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
@@ -66,5 +72,42 @@ public class FavouritesController(IUserBookFavouriteService userBookFavouriteSer
     {
         var favourites = await userBookFavouriteService.GetByUserEmailAsync(email);
         return Ok(favourites);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddFavourite([FromBody] string workId)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (email == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await userService.GetUserByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var bookDetails = await bookSearchService.GetBookDetailsByIdAsync(workId);
+        if (bookDetails == null)
+        {
+            return NotFound("Book not found");
+        }
+
+        var newFavourite = new UserBookFavourite(
+            Id: Guid.NewGuid().ToString(),
+            User: user,
+            Book: new Book(
+                Author: string.Join(", ", bookDetails.Authors),
+                Title: bookDetails.Title,
+                CoverId: bookDetails.Covers.FirstOrDefault(),
+                WorkId: workId
+            ),
+            DateAdded: DateTime.UtcNow
+        );
+
+        await userBookFavouriteService.CreateAsync(newFavourite);
+        return CreatedAtAction(nameof(Get), new { id = newFavourite.Id }, newFavourite);
     }
 }

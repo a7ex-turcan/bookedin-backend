@@ -2,8 +2,7 @@
 
 public record Book(
     string Author, 
-    string Title, 
-    string Isbn,
+    string Title,
     int CoverId,
     string WorkId // New property to hold the work ID
 );

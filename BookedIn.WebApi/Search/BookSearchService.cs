@@ -18,7 +18,6 @@ public class BookSearchService(HttpClient httpClient) : IBookSearchService
                        doc => new Book(
                            Author: string.Join(", ", (doc.AuthorNames ?? [])),
                            Title: doc.Title,
-                           Isbn: (doc.Isbn ?? []) .FirstOrDefault() ?? string.Empty,
                            CoverId: doc.CoverId ?? 0,
                            WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
                        )
