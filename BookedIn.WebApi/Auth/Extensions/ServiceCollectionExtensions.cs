@@ -1,9 +1,9 @@
-﻿
-using System.Text;
+﻿using System.Text;
+using BookedIn.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BookedIn.WebApi.Services.Extensions;
+namespace BookedIn.WebApi.Auth.Extensions;
 
 public static class ServiceCollectionExtensions
 {

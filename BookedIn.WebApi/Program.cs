@@ -1,3 +1,4 @@
+using BookedIn.WebApi.Auth.Extensions;
 using Microsoft.EntityFrameworkCore;
 using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Services.Extensions;
@@ -14,6 +15,7 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
+    .AddUserBookFavouriteService()
     .AddAuthenticationServices(builder.Configuration);
 
 var app = builder.Build();
