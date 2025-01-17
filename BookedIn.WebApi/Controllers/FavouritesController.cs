@@ -14,7 +14,7 @@ namespace BookedIn.WebApi.Controllers;
 public class FavouritesController(
     IUserBookFavouriteService userBookFavouriteService,
     IUserService userService,
-    IBookSearchService bookSearchService
+    IBookService bookService
 ) : ControllerBase
 {
     [HttpGet]
@@ -89,7 +89,7 @@ public class FavouritesController(
             return NotFound("User not found");
         }
 
-        var bookDetails = await bookSearchService.GetBookDetailsByIdAsync(workId);
+        var bookDetails = await bookService.GetBookDetailsByIdAsync(workId);
         if (bookDetails == null)
         {
             return NotFound("Book not found");

@@ -7,12 +7,19 @@ namespace BookedIn.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BooksController(IBookSearchService bookSearchService) : ControllerBase
+public class BooksController(IBookService bookService) : ControllerBase
 {
     [HttpGet("search")]
     public async Task<ActionResult<List<Book>>> SearchBooks(string query)
     {
-        var books = await bookSearchService.SearchBooksAsync(query);
+        var books = await bookService.SearchBooksAsync(query);
         return Ok(books);
+    }
+    
+    [HttpGet("cover/{coverId}")]
+    public IActionResult GetCoverImage(int coverId)
+    {
+        var imageUrl = bookService.GetCoverImageUrl(coverId);
+        return Redirect(imageUrl);
     }
 }

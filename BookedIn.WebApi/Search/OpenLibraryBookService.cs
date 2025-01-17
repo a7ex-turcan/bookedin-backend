@@ -4,7 +4,7 @@ using BookedIn.WebApi.Search.OpenLibrary;
 
 namespace BookedIn.WebApi.Search;
 
-public class BookSearchService(HttpClient httpClient) : IBookSearchService
+public class OpenLibraryBookService(HttpClient httpClient) : IBookService
 {
     public async Task<List<Book>> SearchBooksAsync(string query)
     {
@@ -33,5 +33,10 @@ public class BookSearchService(HttpClient httpClient) : IBookSearchService
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
+    }
+    
+    public string GetCoverImageUrl(int coverId)
+    {
+        return $"https://covers.openlibrary.org/b/id/{coverId}-L.jpg";
     }
 }
