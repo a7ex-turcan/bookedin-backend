@@ -1,8 +1,6 @@
-﻿// File: BookedIn.WebApi/Services/BookSearchService.cs
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using BookedIn.WebApi.Domain;
-using BookedIn.WebApi.Services;
+using BookedIn.WebApi.Search.OpenLibrary;
 
 namespace BookedIn.WebApi.Search;
 
@@ -16,11 +14,27 @@ public class BookSearchService(HttpClient httpClient) : IBookSearchService
         var jsonResponse = await response.Content.ReadAsStringAsync();
         var searchResult = JsonSerializer.Deserialize<OpenLibrarySearchResult>(jsonResponse);
 
-        return searchResult?.Docs ?? new List<Book>();
+        return searchResult?.Docs.Select(
+                       doc => new Book(
+                           Author: string.Join(", ", (doc.AuthorNames ?? [])),
+                           Title: doc.Title,
+                           Isbn: (doc.Isbn ?? []) .FirstOrDefault() ?? string.Empty,
+                           CoverId: doc.CoverId ?? 0,
+                           WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
+                       )
+                   )
+                   .ToList()
+               ?? new List<Book>();
     }
-}
 
-public class OpenLibrarySearchResult
-{
-    public List<Book> Docs { get; set; } = [];
+    public async Task<BookDetails?> GetBookDetailsByIdAsync(string id)
+    {
+        var response = await httpClient.GetAsync($"https://openlibrary.org/works/{id}.json");
+        response.EnsureSuccessStatusCode();
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var bookDetails = JsonSerializer.Deserialize<BookDetails>(jsonResponse);
+
+        return bookDetails;
+    }
 }

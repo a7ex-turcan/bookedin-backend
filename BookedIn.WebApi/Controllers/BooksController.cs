@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BookedIn.WebApi.Domain;
+using BookedIn.WebApi.Search;
 using BookedIn.WebApi.Services;
 
 namespace BookedIn.WebApi.Controllers;
