@@ -4,14 +4,19 @@ namespace BookedIn.WebApi.Domain.OpenLibraryExtensions;
 
 public static class OpenApiBookDetailsExtensions
 {
-    public static BookDetails ToBookDetails(this OpenLibraryBookDetails openLibraryBookDetails) =>
+    public static BookDetails ToBookDetails(this OpenLibraryBookDetails openLibraryBookDetails, IEnumerable<OpenLibraryAuthor> openLibraryAuthors) =>
         new(
-            Authors: openLibraryBookDetails.Authors.Select(a => a.Author.Key).ToList(),
+            Authors: openLibraryAuthors.Select(a => a.ToAuthor()).ToList(),
             Title: openLibraryBookDetails.Title,
             CoverId: openLibraryBookDetails.Covers.FirstOrDefault(),
             WorkId: openLibraryBookDetails.Key.Replace("/works/", ""),
             Description: openLibraryBookDetails.Description?.Value ?? string.Empty,
-            // Description: openLibraryBookDetails.DescriptionRaw,
             Subjects: openLibraryBookDetails.Subjects
+        );
+    
+    public static Author ToAuthor(this OpenLibraryAuthor openLibraryAuthor) =>
+        new(
+            Name: openLibraryAuthor.Name,
+            Key: openLibraryAuthor.Key.Replace("/authors/", "")
         );
 }

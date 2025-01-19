@@ -14,7 +14,7 @@ public record OpenLibraryBookDetails(
     [property: JsonPropertyName("key")] string Key,
     [property: JsonPropertyName("authors")] List<AuthorInfo> Authors,
     [property: JsonPropertyName("excerpts")] List<ExcerptInfo> Excerpts,
-    [property: JsonPropertyName("type")] Type Type,
+    [property: JsonPropertyName("type")] KeyObject Type,
     [property: JsonPropertyName("subjects")] List<string> Subjects,
     [property: JsonPropertyName("subject_times")] List<string> SubjectTimes,
     [property: JsonPropertyName("latest_revision")] int LatestRevision,
@@ -31,12 +31,12 @@ public record Description(
 public record Link(
     [property: JsonPropertyName("title")] string Title,
     [property: JsonPropertyName("url")] string Url,
-    [property: JsonPropertyName("type")] Type Type
+    [property: JsonPropertyName("type")] KeyObject Type
 );
 
 public record AuthorInfo(
     [property: JsonPropertyName("author")] AuthorDetails Author,
-    [property: JsonPropertyName("type")] Type Type
+    [property: JsonPropertyName("type")] KeyObject Type
 );
 
 public record AuthorDetails(
@@ -47,10 +47,6 @@ public record ExcerptInfo(
     [property: JsonPropertyName("excerpt")] string Excerpt,
     [property: JsonPropertyName("comment")] string Comment,
     [property: JsonPropertyName("author")] AuthorDetails Author
-);
-
-public record Type(
-    [property: JsonPropertyName("key")] string Key
 );
 
 public record Created(

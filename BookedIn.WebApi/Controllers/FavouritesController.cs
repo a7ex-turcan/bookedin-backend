@@ -98,7 +98,7 @@ public class FavouritesController(
             Id: Guid.NewGuid().ToString(),
             User: user,
             Book: new Book(
-                Authors: bookDetails.Authors,
+                Authors: bookDetails.Authors.Select(author => author.Name).ToList(),
                 Title: bookDetails.Title,
                 CoverId: bookDetails.CoverId,
                 WorkId: workId
