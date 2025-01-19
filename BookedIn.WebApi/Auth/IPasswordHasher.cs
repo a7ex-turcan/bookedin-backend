@@ -1,4 +1,4 @@
-﻿namespace BookedIn.WebApi.Services;
+﻿namespace BookedIn.WebApi.Auth;
 
 public interface IPasswordHasher
 {

@@ -1,9 +1,9 @@
 using BookedIn.WebApi.Auth.Extensions;
+using BookedIn.WebApi.Books.Extensions;
 using Microsoft.EntityFrameworkCore;
 using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Mongo.Extensions;
 using BookedIn.WebApi.Search.Extensions;
-using BookedIn.WebApi.Services.Extensions;
 using BookedIn.WebApi.Users.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

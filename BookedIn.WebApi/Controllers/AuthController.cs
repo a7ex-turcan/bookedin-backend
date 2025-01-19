@@ -2,7 +2,6 @@
 using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Models;
-using BookedIn.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

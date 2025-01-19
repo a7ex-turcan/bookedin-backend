@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BookedIn.WebApi.Books;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Search;
-using BookedIn.WebApi.Services;
 using BookedIn.WebApi.Users;
 
 namespace BookedIn.WebApi.Controllers;

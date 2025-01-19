@@ -1,6 +1,6 @@
 using BookedIn.WebApi.Domain;
 
-namespace BookedIn.WebApi.Services;
+namespace BookedIn.WebApi.Books;
 
 public interface IUserBookFavouriteService
 {

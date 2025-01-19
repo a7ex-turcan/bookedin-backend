@@ -1,6 +1,4 @@
-﻿using BookedIn.WebApi.Services;
-
-namespace BookedIn.WebApi.Search.Extensions;
+﻿namespace BookedIn.WebApi.Search.Extensions;
 
 public static class ServiceCollectionExtensions
 {

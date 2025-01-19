@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using BookedIn.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 

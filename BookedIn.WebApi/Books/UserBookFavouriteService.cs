@@ -1,7 +1,7 @@
-﻿using MongoDB.Driver;
-using BookedIn.WebApi.Domain;
+﻿using BookedIn.WebApi.Domain;
+using MongoDB.Driver;
 
-namespace BookedIn.WebApi.Services;
+namespace BookedIn.WebApi.Books;
 
 public class UserBookFavouriteService : IUserBookFavouriteService
 {

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace BookedIn.WebApi.Services.Extensions;
+﻿namespace BookedIn.WebApi.Books.Extensions;
 
 public static class ServiceCollectionExtensions
 {
