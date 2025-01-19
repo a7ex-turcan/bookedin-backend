@@ -2,7 +2,7 @@
 
 namespace BookedIn.WebApi.Search.OpenLibrary;
 
-public record OpenApiBookDetails(
+public record OpenLibraryBookDetails(
     [property: JsonPropertyName("description")] Description Description,
     [property: JsonPropertyName("links")] List<Link> Links,
     [property: JsonPropertyName("title")] string Title,

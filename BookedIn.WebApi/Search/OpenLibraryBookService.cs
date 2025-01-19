@@ -43,13 +43,13 @@ public class OpenLibraryBookService(HttpClient httpClient) : IBookService
                ?? new List<Book>();
     }
 
-    public async Task<OpenApiBookDetails?> GetBookDetailsByIdAsync(string id)
+    public async Task<OpenLibraryBookDetails?> GetBookDetailsByIdAsync(string id)
     {
         var response = await httpClient.GetAsync($"https://openlibrary.org/works/{id}.json");
         response.EnsureSuccessStatusCode();
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<OpenApiBookDetails>(jsonResponse);
+        return JsonSerializer.Deserialize<OpenLibraryBookDetails>(jsonResponse);
     }
 
     public string GetCoverImageUrl(int coverId, string size)
