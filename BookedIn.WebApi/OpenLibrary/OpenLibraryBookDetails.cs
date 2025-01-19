@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using BookedIn.WebApi.OpenLibrary;
+using BookedIn.WebApi.OpenLibrary.Serialization;
 
-namespace BookedIn.WebApi.Search.OpenLibrary;
+namespace BookedIn.WebApi.OpenLibrary;
 
 public record OpenLibraryBookDetails(
     [property: JsonPropertyName("description"), JsonConverter(typeof(DescriptionConverter))]

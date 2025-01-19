@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using BookedIn.WebApi.Search.OpenLibrary;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Domain.OpenLibraryExtensions;
+using BookedIn.WebApi.OpenLibrary;
 
 namespace BookedIn.WebApi.Books;
 

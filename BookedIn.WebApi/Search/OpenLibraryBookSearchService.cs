@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using BookedIn.WebApi.Domain;
-using BookedIn.WebApi.Search.OpenLibrary;
+using BookedIn.WebApi.OpenLibrary;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace BookedIn.WebApi.Search;

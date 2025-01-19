@@ -1,15 +1,13 @@
-﻿using BookedIn.WebApi.Search.OpenLibrary;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Type = System.Type;
 
-namespace BookedIn.WebApi.OpenLibrary;
+namespace BookedIn.WebApi.OpenLibrary.Serialization;
 
 public class DescriptionConverter : JsonConverter<Description?>
 {
     public override Description? Read(
         ref Utf8JsonReader reader,
-        Type typeToConvert,
+        System.Type typeToConvert,
         JsonSerializerOptions options
     ) =>
         reader.TokenType switch

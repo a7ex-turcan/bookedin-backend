@@ -1,4 +1,4 @@
-﻿using BookedIn.WebApi.Search.OpenLibrary;
+﻿using BookedIn.WebApi.OpenLibrary;
 
 namespace BookedIn.WebApi.Domain.OpenLibraryExtensions;
 
