@@ -54,6 +54,6 @@ public class OpenLibraryBookService(HttpClient httpClient) : IBookService
 
     public string GetCoverImageUrl(int coverId, string size)
     {
-        return $"https://covers.openlibrary.org/b/id/{coverId}-{size}.jpg";
+        return $"https://covers.openlibrary.org/b/id/{coverId}-{size.ToUpper()}.jpg";
     }
 }
