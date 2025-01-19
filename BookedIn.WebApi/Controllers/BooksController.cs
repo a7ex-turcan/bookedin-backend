@@ -25,4 +25,15 @@ public class BooksController(IBookSearchService bookSearchService, IBookService 
         var imageUrl = bookService.GetCoverImageUrl(coverId, size);
         return Redirect(imageUrl);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BookDetails>> GetBookDetails(string id)
+    {
+        var bookDetails = await bookService.GetBookDetailsByIdAsync(id);
+        if (bookDetails == null)
+        {
+            return NotFound();
+        }
+        return Ok(bookDetails);
+    }
 }

@@ -11,6 +11,7 @@ public static class OpenApiBookDetailsExtensions
             CoverId: openLibraryBookDetails.Covers.FirstOrDefault(),
             WorkId: openLibraryBookDetails.Key.Replace("/works/", ""),
             Description: openLibraryBookDetails.Description?.Value ?? string.Empty,
+            // Description: openLibraryBookDetails.DescriptionRaw,
             Subjects: openLibraryBookDetails.Subjects
         );
 }
