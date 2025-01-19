@@ -1,7 +1,7 @@
 ﻿namespace BookedIn.WebApi.Domain;
 
 public record Book(
-    string Author, 
+    List<string> Authors, 
     string Title,
     int CoverId,
     string WorkId

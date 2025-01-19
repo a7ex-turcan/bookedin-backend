@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Threading;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Search.OpenLibrary;
 using Microsoft.AspNetCore.WebUtilities;
@@ -33,15 +32,17 @@ public class OpenLibraryBookSearchService(HttpClient httpClient) : IBookSearchSe
 
         return searchResult?.Docs.Select(
                        doc => new Book(
-                           Author: string.Join(", ", (doc.AuthorNames ?? [])),
+                           Authors: doc.AuthorNames?.ToList() ??
+                           [
+                           ],
                            Title: doc.Title,
                            CoverId: doc.CoverId ?? 0,
                            WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
                        )
                    )
                    .ToList()
-               ?? new List<Book>();
+               ??
+               [
+               ];
     }
-
-   
 }

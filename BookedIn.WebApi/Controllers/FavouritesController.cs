@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using BookedIn.WebApi.Books;
 using BookedIn.WebApi.Domain;
-using BookedIn.WebApi.Search;
 using BookedIn.WebApi.Users;
 
 namespace BookedIn.WebApi.Controllers;
@@ -99,7 +98,7 @@ public class FavouritesController(
             Id: Guid.NewGuid().ToString(),
             User: user,
             Book: new Book(
-                Author: bookDetails.Author,
+                Authors: bookDetails.Authors,
                 Title: bookDetails.Title,
                 CoverId: bookDetails.CoverId,
                 WorkId: workId
