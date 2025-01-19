@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace BookedIn.WebApi.Search;
 
-public class OpenLibraryBookService(HttpClient httpClient) : IBookService
+public class OpenLibraryBookSearchService(HttpClient httpClient) : IBookSearchService
 {
     public async Task<List<Book>> SearchBooksAsync(
         string query,
@@ -43,17 +43,5 @@ public class OpenLibraryBookService(HttpClient httpClient) : IBookService
                ?? new List<Book>();
     }
 
-    public async Task<OpenLibraryBookDetails?> GetBookDetailsByIdAsync(string id)
-    {
-        var response = await httpClient.GetAsync($"https://openlibrary.org/works/{id}.json");
-        response.EnsureSuccessStatusCode();
-
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<OpenLibraryBookDetails>(jsonResponse);
-    }
-
-    public string GetCoverImageUrl(int coverId, string size)
-    {
-        return $"https://covers.openlibrary.org/b/id/{coverId}-{size.ToUpper()}.jpg";
-    }
+   
 }

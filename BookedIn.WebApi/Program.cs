@@ -19,7 +19,7 @@ builder.Services
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
     .AddMongoClient(builder.Configuration)
-    .AddUserBookFavouriteService()
+    .AddBooks()
     .AddBookSearch()
     .AddUsers()
     .AddAuthenticationServices(builder.Configuration);

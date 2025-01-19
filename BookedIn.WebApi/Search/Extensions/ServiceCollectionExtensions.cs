@@ -4,8 +4,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBookSearch(this IServiceCollection services)
     {
-        services.AddSingleton<IBookService, OpenLibraryBookService>();
-        services.AddHttpClient<IBookService, OpenLibraryBookService>();
+        services.AddSingleton<IBookSearchService, OpenLibraryBookSearchService>();
+        services.AddHttpClient<IBookSearchService, OpenLibraryBookSearchService>();
         
         return services;
     }

@@ -1,4 +1,5 @@
-﻿using BookedIn.WebApi.Domain;
+﻿using BookedIn.WebApi.Books;
+using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Search;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace BookedIn.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BooksController(IBookService bookService) : ControllerBase
+public class BooksController(IBookSearchService bookSearchService, IBookService bookService) : ControllerBase
 {
     [HttpGet("search")]
     public async Task<ActionResult<List<Book>>> SearchBooks(
@@ -14,7 +15,7 @@ public class BooksController(IBookService bookService) : ControllerBase
         [FromQuery] int? limit = 10
     )
     {
-        var books = await bookService.SearchBooksAsync(query, limit, HttpContext.RequestAborted);
+        var books = await bookSearchService.SearchBooksAsync(query, limit, HttpContext.RequestAborted);
         return Ok(books);
     }
 
