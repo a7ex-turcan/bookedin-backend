@@ -99,9 +99,9 @@ public class FavouritesController(
             Id: Guid.NewGuid().ToString(),
             User: user,
             Book: new Book(
-                Author: string.Join(", ", bookDetails.Authors),
+                Author: bookDetails.Author,
                 Title: bookDetails.Title,
-                CoverId: bookDetails.Covers.FirstOrDefault(),
+                CoverId: bookDetails.CoverId,
                 WorkId: workId
             ),
             DateAdded: DateTime.UtcNow
