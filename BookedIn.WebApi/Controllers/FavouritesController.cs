@@ -74,9 +74,9 @@ public class FavouritesController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddFavourite([FromBody] string workId)
+    public async Task<IActionResult> AddFavourite([FromBody] AddFavouriteRequest request)
     {
-        var email = User.FindFirstValue(ClaimTypes.Email);
+        var email = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (email == null)
         {
             return Unauthorized();
@@ -88,7 +88,7 @@ public class FavouritesController(
             return NotFound("User not found");
         }
 
-        var bookDetails = await bookSearchService.GetBookDetailsByIdAsync(workId);
+        var bookDetails = await bookSearchService.GetBookDetailsByIdAsync(request.WorkId);
         if (bookDetails == null)
         {
             return NotFound("Book not found");
@@ -101,7 +101,7 @@ public class FavouritesController(
                 Authors: bookDetails.Authors.Select(author => author.Name).ToList(),
                 Title: bookDetails.Title,
                 CoverId: bookDetails.CoverId,
-                WorkId: workId
+                WorkId: request.WorkId
             ),
             DateAdded: DateTime.UtcNow
         );
@@ -109,4 +109,6 @@ public class FavouritesController(
         await userBookFavouriteService.CreateAsync(newFavourite);
         return CreatedAtAction(nameof(Get), new { id = newFavourite.Id }, newFavourite);
     }
+
+    public record AddFavouriteRequest(string WorkId);
 }
