@@ -88,6 +88,12 @@ public class FavouritesController(
             return NotFound("User not found");
         }
 
+        var existingFavourite = await userBookFavouriteService.GetByUserEmailAndWorkIdAsync(email, request.WorkId);
+        if (existingFavourite != null)
+        {
+            return BadRequest("Book is already added as a favourite");
+        }
+
         var bookDetails = await bookSearchService.GetBookDetailsByIdAsync(request.WorkId);
         if (bookDetails == null)
         {

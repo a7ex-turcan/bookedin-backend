@@ -10,4 +10,6 @@ public interface IUserBookFavouriteService
     Task UpdateAsync(string id, UserBookFavourite updatedFavourite);
     Task RemoveAsync(string id);
     Task<List<UserBookFavourite>> GetByUserEmailAsync(string email);
+    
+    Task<UserBookFavourite?> GetByUserEmailAndWorkIdAsync(string email, string workId);
 }

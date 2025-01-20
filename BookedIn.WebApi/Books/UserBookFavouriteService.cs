@@ -30,4 +30,14 @@ public class UserBookFavouriteService : IUserBookFavouriteService
 
     public async Task<List<UserBookFavourite>> GetByUserEmailAsync(string email) =>
         await _userBookFavourites.Find(fav => fav.User.Email == email).ToListAsync();
+    
+    public async Task<UserBookFavourite?> GetByUserEmailAndWorkIdAsync(string email, string workId)
+    {
+        var filter = Builders<UserBookFavourite>.Filter.And(
+            Builders<UserBookFavourite>.Filter.Eq(f => f.User.Email, email),
+            Builders<UserBookFavourite>.Filter.Eq(f => f.Book.WorkId, workId)
+        );
+
+        return await _userBookFavourites.Find(filter).FirstOrDefaultAsync();
+    }
 }
