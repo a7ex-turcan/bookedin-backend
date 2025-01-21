@@ -18,7 +18,7 @@ public class FavouritesController(
 ) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<UserBookFavourite>>> Get()
+    public async Task<ActionResult<List<Book>>> Get()
     {
         var email = currentUserService.GetUserEmail();
         if (email == null)
@@ -27,11 +27,12 @@ public class FavouritesController(
         }
 
         var favourites = await userBookFavouriteService.GetByUserEmailAsync(email);
-        return Ok(favourites);
+        var books = favourites.Select(f => f.Book).ToList();
+        return Ok(books);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserBookFavourite>> Get(string id)
+    public async Task<ActionResult<Book>> Get(string id)
     {
         var email = currentUserService.GetUserEmail();
         if (email == null)
@@ -45,7 +46,7 @@ public class FavouritesController(
             return NotFound();
         }
 
-        return Ok(favourite);
+        return Ok(favourite.Book);
     }
 
     [HttpDelete("{workId}")]
@@ -59,17 +60,20 @@ public class FavouritesController(
 
         var favourite = await userBookFavouriteService.GetByUserEmailAndWorkIdAsync(email, workId);
         if (favourite == null)
+        {
             return NotFound();
+        }
 
         await userBookFavouriteService.RemoveAsync(favourite.Id);
         return NoContent();
     }
 
     [HttpGet("user/{email}")]
-    public async Task<ActionResult<List<UserBookFavourite>>> GetByUserEmail(string email)
+    public async Task<ActionResult<List<Book>>> GetByUserEmail(string email)
     {
         var favourites = await userBookFavouriteService.GetByUserEmailAsync(email);
-        return Ok(favourites);
+        var books = favourites.Select(f => f.Book).ToList();
+        return Ok(books);
     }
 
     [HttpPost]
@@ -112,7 +116,7 @@ public class FavouritesController(
         );
 
         await userBookFavouriteService.CreateAsync(newFavourite);
-        return CreatedAtAction(nameof(Get), new { id = newFavourite.Id }, newFavourite);
+        return CreatedAtAction(nameof(Get), new { id = newFavourite.Id }, newFavourite.Book);
     }
 
     public record AddFavouriteRequest(string WorkId);
