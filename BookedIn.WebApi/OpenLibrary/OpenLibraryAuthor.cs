@@ -35,31 +35,3 @@ public record OpenLibraryAuthor(
     [property: JsonPropertyName("last_modified")]
     DateTimeValue LastModified
 );
-
-public record RemoteIds(
-    [property: JsonPropertyName("viaf")] string Viaf,
-    [property: JsonPropertyName("goodreads")]
-    string Goodreads,
-    [property: JsonPropertyName("storygraph")]
-    string Storygraph,
-    [property: JsonPropertyName("isni")] string Isni,
-    [property: JsonPropertyName("librarything")]
-    string LibraryThing,
-    [property: JsonPropertyName("amazon")] string Amazon,
-    [property: JsonPropertyName("wikidata")]
-    string Wikidata
-);
-
-public record KeyObject(
-    [property: JsonPropertyName("key")] string Key
-);
-
-public record DateTimeValue(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("value")] DateTime Value
-);
-
-public record BioDetails(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("value")] string Value
-);

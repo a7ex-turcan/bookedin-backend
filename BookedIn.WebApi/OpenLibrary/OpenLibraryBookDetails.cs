@@ -22,39 +22,3 @@ public record OpenLibraryBookDetails(
     [property: JsonPropertyName("created")] Created Created,
     [property: JsonPropertyName("last_modified")] LastModified LastModified
 );
-
-public record Description(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("value")] string Value
-);
-
-public record Link(
-    [property: JsonPropertyName("title")] string Title,
-    [property: JsonPropertyName("url")] string Url,
-    [property: JsonPropertyName("type")] KeyObject Type
-);
-
-public record AuthorInfo(
-    [property: JsonPropertyName("author")] AuthorDetails Author,
-    [property: JsonPropertyName("type")] KeyObject Type
-);
-
-public record AuthorDetails(
-    [property: JsonPropertyName("key")] string Key
-);
-
-public record ExcerptInfo(
-    [property: JsonPropertyName("excerpt")] string Excerpt,
-    [property: JsonPropertyName("comment")] string Comment,
-    [property: JsonPropertyName("author")] AuthorDetails Author
-);
-
-public record Created(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("value")] string Value
-);
-
-public record LastModified(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("value")] string Value
-);

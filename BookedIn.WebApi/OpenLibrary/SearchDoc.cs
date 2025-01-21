@@ -2,10 +2,6 @@
 
 namespace BookedIn.WebApi.OpenLibrary;
 
-public record OpenLibrarySearchResult(
-    [property: JsonPropertyName("docs")] List<SearchDoc> Docs
-);
-
 public record SearchDoc(
     [property: JsonPropertyName("author_name")] List<string> AuthorNames,
     [property: JsonPropertyName("title")] string Title,
