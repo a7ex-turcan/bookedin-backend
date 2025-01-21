@@ -33,6 +33,10 @@ public static class ServiceCollectionExtensions
                 };
             });
 
+        // Add services to the container.
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        
         return services;
     }
 }

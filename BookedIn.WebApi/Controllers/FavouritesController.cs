@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using BookedIn.WebApi.Books;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Users;
+using BookedIn.WebApi.Auth;
 
 namespace BookedIn.WebApi.Controllers;
 
@@ -13,13 +13,14 @@ namespace BookedIn.WebApi.Controllers;
 public class FavouritesController(
     IUserBookFavouriteService userBookFavouriteService,
     IUserService userService,
-    IBookService bookSearchService
+    IBookService bookSearchService,
+    ICurrentUserService currentUserService
 ) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserBookFavourite>>> Get()
     {
-        var email = User.FindFirstValue(ClaimTypes.Email);
+        var email = currentUserService.GetUserEmail();
         if (email == null)
         {
             return Unauthorized();
@@ -32,7 +33,7 @@ public class FavouritesController(
     [HttpGet("{id}")]
     public async Task<ActionResult<UserBookFavourite>> Get(string id)
     {
-        var email = User.FindFirstValue(ClaimTypes.Email);
+        var email = currentUserService.GetUserEmail();
         if (email == null)
         {
             return Unauthorized();
@@ -50,7 +51,7 @@ public class FavouritesController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var email = User.FindFirstValue(ClaimTypes.Email);
+        var email = currentUserService.GetUserEmail();
         if (email == null)
         {
             return Unauthorized();
@@ -76,7 +77,7 @@ public class FavouritesController(
     [HttpPost]
     public async Task<IActionResult> AddFavourite([FromBody] AddFavouriteRequest request)
     {
-        var email = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var email = currentUserService.GetUserEmail();
         if (email == null)
         {
             return Unauthorized();

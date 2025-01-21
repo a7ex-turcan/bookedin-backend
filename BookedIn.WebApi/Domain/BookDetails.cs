@@ -1,5 +1,4 @@
-﻿
-namespace BookedIn.WebApi.Domain;
+﻿namespace BookedIn.WebApi.Domain;
 
 public record BookDetails(
     List<Author> Authors,
@@ -7,5 +6,6 @@ public record BookDetails(
     int CoverId,
     string WorkId,
     string Description,
-    List<string> Subjects
+    List<string> Subjects,
+    bool IsFavorite
 );
