@@ -27,7 +27,7 @@ public class FavouritesController(
         }
 
         var favourites = await userBookFavouriteService.GetByUserEmailAsync(email);
-        var books = favourites.Select(f => f.Book).ToList();
+        var books = favourites.Select(f => f.Book with { IsFavorite = true }).ToList();
         return Ok(books);
     }
 
@@ -46,7 +46,7 @@ public class FavouritesController(
             return NotFound();
         }
 
-        return Ok(favourite.Book);
+        return Ok(favourite.Book with { IsFavorite = true });
     }
 
     [HttpDelete("{workId}")]
@@ -72,7 +72,7 @@ public class FavouritesController(
     public async Task<ActionResult<List<Book>>> GetByUserEmail(string email)
     {
         var favourites = await userBookFavouriteService.GetByUserEmailAsync(email);
-        var books = favourites.Select(f => f.Book).ToList();
+        var books = favourites.Select(f => f.Book with { IsFavorite = true }).ToList();
         return Ok(books);
     }
 
@@ -110,7 +110,8 @@ public class FavouritesController(
                 Authors: bookDetails.Authors.Select(author => author.Name).ToList(),
                 Title: bookDetails.Title,
                 CoverId: bookDetails.CoverId,
-                WorkId: request.WorkId
+                WorkId: request.WorkId,
+                IsFavorite: true
             ),
             DateAdded: DateTime.UtcNow
         );

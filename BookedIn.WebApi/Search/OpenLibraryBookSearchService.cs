@@ -37,7 +37,8 @@ public class OpenLibraryBookSearchService(HttpClient httpClient) : IBookSearchSe
                            ],
                            Title: doc.Title,
                            CoverId: doc.CoverId ?? 0,
-                           WorkId: doc.Key.Replace("/works/", "") // Extracting just the ID
+                           WorkId: doc.Key.Replace("/works/", ""),
+                           false// Extracting just the ID
                        )
                    )
                    .ToList()

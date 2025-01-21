@@ -4,5 +4,6 @@ public record Book(
     List<string> Authors, 
     string Title,
     int CoverId,
-    string WorkId
+    string WorkId,
+    bool IsFavorite
 );
