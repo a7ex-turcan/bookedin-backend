@@ -48,8 +48,8 @@ public class FavouritesController(
         return Ok(favourite);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{workId}")]
+    public async Task<IActionResult> Delete(string workId)
     {
         var email = currentUserService.GetUserEmail();
         if (email == null)
@@ -57,13 +57,11 @@ public class FavouritesController(
             return Unauthorized();
         }
 
-        var favourite = await userBookFavouriteService.GetAsync(id);
-        if (favourite == null || favourite.User.Email != email)
-        {
+        var favourite = await userBookFavouriteService.GetByUserEmailAndWorkIdAsync(email, workId);
+        if (favourite == null)
             return NotFound();
-        }
 
-        await userBookFavouriteService.RemoveAsync(id);
+        await userBookFavouriteService.RemoveAsync(favourite.Id);
         return NoContent();
     }
 
