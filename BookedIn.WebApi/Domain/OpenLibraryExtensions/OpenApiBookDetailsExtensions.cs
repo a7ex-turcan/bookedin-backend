@@ -12,7 +12,7 @@ public static class OpenApiBookDetailsExtensions
         new(
             Authors: openLibraryAuthors.Select(a => a.ToAuthor()).ToList(),
             Title: openLibraryBookDetails.Title,
-            CoverId: openLibraryBookDetails.Covers.FirstOrDefault(),
+            CoverId: openLibraryBookDetails.Covers?.FirstOrDefault()??0,
             WorkId: openLibraryBookDetails.Key.Replace("/works/", ""),
             Description: openLibraryBookDetails.Description?.Value ?? string.Empty,
             Subjects: openLibraryBookDetails.Subjects,
