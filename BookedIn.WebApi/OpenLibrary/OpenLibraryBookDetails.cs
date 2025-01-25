@@ -19,6 +19,5 @@ public record OpenLibraryBookDetails(
     [property: JsonPropertyName("subject_times")] List<string> SubjectTimes,
     [property: JsonPropertyName("latest_revision")] int LatestRevision,
     [property: JsonPropertyName("revision")] int Revision,
-    [property: JsonPropertyName("created")] Created Created,
-    [property: JsonPropertyName("last_modified")] LastModified LastModified
+    [property: JsonPropertyName("created")] Created Created
 );

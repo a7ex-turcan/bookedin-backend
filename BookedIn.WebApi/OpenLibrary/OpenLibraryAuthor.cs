@@ -29,9 +29,5 @@ public record OpenLibraryAuthor(
     [property: JsonPropertyName("latest_revision")]
     int LatestRevision,
     [property: JsonPropertyName("revision")]
-    int Revision,
-    [property: JsonPropertyName("created")]
-    DateTimeValue Created,
-    [property: JsonPropertyName("last_modified")]
-    DateTimeValue LastModified
+    int Revision
 );
