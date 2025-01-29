@@ -87,4 +87,19 @@ public class UserBookCollectionController(
 
         return Ok(collection);
     }
+
+    [HttpGet("user/{email}")]
+    public async Task<IActionResult> GetUserCollections(string email)
+    {
+        var user = await userService.GetUserByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var collections = await userBookCollectionService.GetAsync();
+        var userCollections = collections.Where(c => c.User.Email == email).ToList();
+
+        return Ok(userCollections);
+    }
 }
