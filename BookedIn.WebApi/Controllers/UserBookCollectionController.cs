@@ -1,6 +1,7 @@
 ﻿using BookedIn.WebApi.Books;
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Users;
+using BookedIn.WebApi.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookedIn.WebApi.Controllers;
@@ -10,9 +11,9 @@ namespace BookedIn.WebApi.Controllers;
 public class UserBookCollectionController(
     IUserBookCollectionService userBookCollectionService,
     IBookService bookService,
-    IUserService userService
-)
-    : ControllerBase
+    IUserService userService,
+    ICurrentUserService currentUserService
+) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateCollection([FromBody] UserBookCollection newCollection)
@@ -30,6 +31,12 @@ public class UserBookCollectionController(
             return NotFound();
         }
 
+        var currentUserEmail = currentUserService.GetUserEmail();
+        if (collection.User.Email != currentUserEmail)
+        {
+            return Forbid();
+        }
+
         await userBookCollectionService.RemoveAsync(id);
         return NoContent();
     }
@@ -41,6 +48,12 @@ public class UserBookCollectionController(
         if (collection == null)
         {
             return NotFound();
+        }
+
+        var currentUserEmail = currentUserService.GetUserEmail();
+        if (collection.User.Email != currentUserEmail)
+        {
+            return Forbid();
         }
 
         var bookDetails = await bookService.GetBookDetailsByIdAsync(workId);
@@ -69,6 +82,12 @@ public class UserBookCollectionController(
         if (collection == null)
         {
             return NotFound();
+        }
+
+        var currentUserEmail = currentUserService.GetUserEmail();
+        if (collection.User.Email != currentUserEmail)
+        {
+            return Forbid();
         }
 
         collection.RemoveBook(workId);
