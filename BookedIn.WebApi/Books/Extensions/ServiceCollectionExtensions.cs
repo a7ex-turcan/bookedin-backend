@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IUserBookFavouriteService, UserBookFavouriteService>();
         services.AddSingleton<IBookService, BookService>();
+        services.AddSingleton<IUserBookCollectionService, UserBookCollectionService>();
 
         services.AddHttpClient<IBookService, BookService>();
         
