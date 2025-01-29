@@ -14,8 +14,6 @@ public class UserBookCollectionController(
 )
     : ControllerBase
 {
-    private readonly IUserService _userService = userService;
-
     [HttpPost]
     public async Task<IActionResult> CreateCollection([FromBody] UserBookCollection newCollection)
     {
