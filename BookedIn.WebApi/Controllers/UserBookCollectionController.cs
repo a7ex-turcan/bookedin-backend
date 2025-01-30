@@ -2,6 +2,7 @@
 using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Users;
 using BookedIn.WebApi.Auth;
+using BookedIn.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookedIn.WebApi.Controllers;
@@ -16,8 +17,42 @@ public class UserBookCollectionController(
 ) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCollection([FromBody] UserBookCollection newCollection)
+    public async Task<IActionResult> CreateCollection([FromBody] CreateUserCollectionRequest newUserCollectionRequest)
     {
+        var email = currentUserService.GetUserEmail();
+        if (email == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await userService.GetUserByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var books = new List<Book>();
+        foreach (var workId in newUserCollectionRequest.WorkIds)
+        {
+            var bookDetails = await bookService.GetBookDetailsByIdAsync(workId);
+            if (bookDetails == null) continue;
+            
+            var book = new Book(
+                bookDetails.Authors.Select(a => a.Name).ToList(),
+                bookDetails.Title,
+                bookDetails.CoverId,
+                bookDetails.WorkId,
+                false
+            );
+            books.Add(book);
+        }
+
+        var newCollection = new UserBookCollection(
+            newUserCollectionRequest.CollectionName,
+            books,
+            user
+        );
+
         await userBookCollectionService.CreateAsync(newCollection);
         return CreatedAtAction(nameof(GetCollection), new { id = newCollection.Id }, newCollection);
     }
