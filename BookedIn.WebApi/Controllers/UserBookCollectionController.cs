@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookedIn.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/collections")]
 public class UserBookCollectionController(
     IUserBookCollectionService userBookCollectionService,
     IBookService bookService,
