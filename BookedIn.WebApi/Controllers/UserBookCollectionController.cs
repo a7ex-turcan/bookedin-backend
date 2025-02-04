@@ -36,7 +36,7 @@ public class UserBookCollectionController(
         {
             var bookDetails = await bookService.GetBookDetailsByIdAsync(workId);
             if (bookDetails == null) continue;
-            
+
             var book = new Book(
                 bookDetails.Authors.Select(a => a.Name).ToList(),
                 bookDetails.Title,
@@ -77,7 +77,7 @@ public class UserBookCollectionController(
     }
 
     [HttpPost("{id}/books")]
-    public async Task<IActionResult> AddBookToCollection(string id, [FromBody] string workId)
+    public async Task<IActionResult> AddBookToCollection(string id, [FromBody] AddBookToCollectionRequest request)
     {
         var collection = await userBookCollectionService.GetAsync(id);
         if (collection == null)
@@ -91,7 +91,7 @@ public class UserBookCollectionController(
             return Forbid();
         }
 
-        var bookDetails = await bookService.GetBookDetailsByIdAsync(workId);
+        var bookDetails = await bookService.GetBookDetailsByIdAsync(request.WorkId);
         if (bookDetails == null)
         {
             return NotFound();

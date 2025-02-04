@@ -7,4 +7,5 @@ public record UserInfo(
     List<BookCollectionInfo> Collections
 );
 
-public record BookCollectionInfo(string CollectionName, List<string> WorkIds);
+
+public record BookCollectionInfo(string Id, string CollectionName, List<string> WorkIds);
