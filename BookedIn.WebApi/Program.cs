@@ -1,10 +1,11 @@
 using BookedIn.WebApi.Auth.Extensions;
 using BookedIn.WebApi.Books.Extensions;
-using Microsoft.EntityFrameworkCore;
 using BookedIn.WebApi.Data;
 using BookedIn.WebApi.Mongo.Extensions;
 using BookedIn.WebApi.Search.Extensions;
 using BookedIn.WebApi.Users.Extensions;
+using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,19 @@ builder.Services
     .AddBookSearch()
     .AddUsers()
     .AddAuthenticationServices(builder.Configuration);
+
+// Configure Redis
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    _ =>
+    {
+        var configuration = ConfigurationOptions.Parse(
+            builder.Configuration.GetConnectionString("RedisConnection")
+            ?? throw new Exception("Your redis config is null"),
+            true
+        );
+        return ConnectionMultiplexer.Connect(configuration);
+    }
+);
 
 var app = builder.Build();
 
