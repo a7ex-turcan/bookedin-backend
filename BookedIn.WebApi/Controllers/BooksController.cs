@@ -9,6 +9,8 @@ namespace BookedIn.WebApi.Controllers;
 [Route("api/[controller]")]
 public class BooksController(IBookSearchService bookSearchService, IBookService bookService) : ControllerBase
 {
+    private readonly HttpClient _httpClient = new();
+
     [HttpGet("search")]
     public async Task<ActionResult<List<Book>>> SearchBooks(
         string query,
@@ -20,10 +22,20 @@ public class BooksController(IBookSearchService bookSearchService, IBookService 
     }
 
     [HttpGet("cover/{coverId}")]
-    public IActionResult GetCoverImage(int coverId, [FromQuery] string size = "L")
+    public async Task<IActionResult> GetCoverImage(int coverId, [FromQuery] string size = "L")
     {
         var imageUrl = bookService.GetCoverImageUrl(coverId, size);
-        return Redirect(imageUrl);
+        var response = await _httpClient.GetAsync(imageUrl);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return NotFound();
+        }
+
+        var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
+        var imageData = await response.Content.ReadAsByteArrayAsync();
+
+        return File(imageData, contentType);
     }
 
     [HttpGet("{id}")]
@@ -34,6 +46,7 @@ public class BooksController(IBookSearchService bookSearchService, IBookService 
         {
             return NotFound();
         }
+
         return Ok(bookDetails);
     }
 }
