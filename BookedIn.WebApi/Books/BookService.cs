@@ -3,16 +3,19 @@ using BookedIn.WebApi.Domain;
 using BookedIn.WebApi.Domain.OpenLibraryExtensions;
 using BookedIn.WebApi.OpenLibrary;
 using BookedIn.WebApi.Auth;
-using BookedIn.WebApi.Users;
+using StackExchange.Redis;
 
 namespace BookedIn.WebApi.Books;
 
 public class BookService(
     HttpClient httpClient,
     ICurrentUserService currentUserService,
-    IUserBookFavouriteService userBookFavouriteService
+    IUserBookFavouriteService userBookFavouriteService,
+    IConnectionMultiplexer redis
 ) : IBookService
 {
+    private readonly IDatabase _redisDb = redis.GetDatabase();
+    
     public async Task<BookDetails?> GetBookDetailsByIdAsync(string id)
     {
         var response = await httpClient.GetAsync($"https://openlibrary.org/works/{id}.json");
@@ -53,6 +56,14 @@ public class BookService(
     
     public async Task<byte[]> GetCoverImageAsync(int coverId, string size)
     {
+        var cacheKey = $"coverImage:{coverId}:{size}";
+        var cachedImage = await _redisDb.StringGetAsync(cacheKey);
+
+        if (cachedImage.HasValue)
+        {
+            return (byte[])cachedImage!;
+        }
+
         var imageUrl = GetCoverImageUrl(coverId, size);
         var response = await httpClient.GetAsync(imageUrl);
 
@@ -61,7 +72,10 @@ public class BookService(
             throw new HttpRequestException("Failed to fetch the cover image.");
         }
 
-        return await response.Content.ReadAsByteArrayAsync();
+        var imageData = await response.Content.ReadAsByteArrayAsync();
+        await _redisDb.StringSetAsync(cacheKey, imageData);
+
+        return imageData;
     }
 
     private async Task<bool> IsBookFavouriteAsync(string bookId)
