@@ -50,6 +50,19 @@ public class BookService(
     {
         return $"https://covers.openlibrary.org/b/id/{coverId}-{size.ToUpper()}.jpg";
     }
+    
+    public async Task<byte[]> GetCoverImageAsync(int coverId, string size)
+    {
+        var imageUrl = GetCoverImageUrl(coverId, size);
+        var response = await httpClient.GetAsync(imageUrl);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException("Failed to fetch the cover image.");
+        }
+
+        return await response.Content.ReadAsByteArrayAsync();
+    }
 
     private async Task<bool> IsBookFavouriteAsync(string bookId)
     {

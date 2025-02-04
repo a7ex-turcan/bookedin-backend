@@ -39,20 +39,18 @@ public class BooksController(
             return File((byte[])cachedImage!, imgContentType);
         }
 
-        var imageUrl = bookService.GetCoverImageUrl(coverId, size);
-        var response = await _httpClient.GetAsync(imageUrl);
+        try
+        {
+            var imageData = await bookService.GetCoverImageAsync(coverId, size);
+            await _redisDb.StringSetAsync(cacheKey, imageData);
 
-        if (!response.IsSuccessStatusCode)
+            var contentType = "image/jpeg"; // Assuming the fetched image is in JPEG format
+            return File(imageData, contentType);
+        }
+        catch (HttpRequestException)
         {
             return NotFound();
         }
-
-        var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
-        var imageData = await response.Content.ReadAsByteArrayAsync();
-
-        await _redisDb.StringSetAsync(cacheKey, imageData);
-
-        return File(imageData, contentType);
     }
 
     [HttpGet("{id}")]
