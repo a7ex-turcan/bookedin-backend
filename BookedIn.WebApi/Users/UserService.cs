@@ -25,7 +25,11 @@ internal class UserService(
 
     public async Task<bool> CreateUserAsync(SignUpRequest request)
     {
-        validator.Validate(request);
+        var validationResult = validator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Error);
+        }
 
         var user = new User
         {
@@ -42,9 +46,15 @@ internal class UserService(
     }
 }
 
+internal record ValidationResult(bool IsValid, string? Error)
+{
+    public static ValidationResult Success() => new(true, null);
+    public static ValidationResult Failure(string error) => new(false, error);
+}
+
 internal class SignUpRequestValidator
 {
-     public void Validate(SignUpRequest request)
+    public ValidationResult Validate(SignUpRequest request)
     {
         var minAge = 13;
         var maxAge = 120;
@@ -52,17 +62,19 @@ internal class SignUpRequestValidator
 
         if (request.DateOfBirth > DateTime.UtcNow)
         {
-            throw new ValidationException("Date of birth cannot be in the future");
+            return ValidationResult.Failure("Date of birth cannot be in the future");
         }
 
         if (age < minAge || age > maxAge)
         {
-            throw new ValidationException($"Age must be between {minAge} and {maxAge} years");
+            return ValidationResult.Failure($"Age must be between {minAge} and {maxAge} years");
         }
 
         if (request.Password.Contains(request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            throw new ValidationException("Password cannot contain email address");
+            return ValidationResult.Failure("Password cannot contain email address");
         }
+
+        return ValidationResult.Success();
     }
 }
