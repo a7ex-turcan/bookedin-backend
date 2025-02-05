@@ -102,4 +102,28 @@ public class SignUpRequestValidatorTests
         Assert.False(result.IsValid);
         Assert.Equal("Password cannot contain email address", result.Error);
     }
+
+    [Fact]
+    [Trait("Category", "Validation")]
+    [DisplayName("Validator collects multiple validation errors")]
+    public void Validate_WithMultipleInvalidFields_ReturnsAllErrors()
+    {
+        // Arrange
+        var request = new SignUpRequest
+        {
+            Email = "test@example.com",
+            Password = "test@example.com123", // Contains email
+            FullName = "Test User",
+            DateOfBirth = DateTime.UtcNow.AddYears(-121) // Too old
+        };
+
+        // Act
+        var result = _validator.Validate(request);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.Equal(2, result.Errors.Count);
+        Assert.Contains("Age must be between 13 and 120 years", result.Errors);
+        Assert.Contains("Password cannot contain email address", result.Errors);
+    }
 }

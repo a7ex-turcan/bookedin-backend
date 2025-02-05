@@ -28,7 +28,7 @@ internal class UserService(
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            return Result<bool>.Failure(validationResult.Error!);
+            return Result<bool>.Failure(string.Join(", ", validationResult.Errors));
         }
 
         var user = new User
@@ -46,36 +46,47 @@ internal class UserService(
     }
 }
 
-internal record ValidationResult(bool IsValid, string? Error)
+internal record ValidationResult
 {
-    public static ValidationResult Success() => new(true, null);
-    public static ValidationResult Failure(string error) => new(false, error);
+    public bool IsValid => !Errors.Any();
+    public IReadOnlyList<string> Errors { get; }
+
+    private ValidationResult(IEnumerable<string> errors)
+    {
+        Errors = errors.ToList();
+    }
+
+    public static ValidationResult Success() => new(Enumerable.Empty<string>());
+    public static ValidationResult Failure(string error) => new(new[] { error });
+    public static ValidationResult Failure(IEnumerable<string> errors) => new(errors);
 }
+
 
 internal class SignUpRequestValidator
 {
     public ValidationResult Validate(SignUpRequest request)
     {
+        var errors = new List<string>();
         var minAge = 13;
         var maxAge = 120;
         var age = DateTime.UtcNow.Year - request.DateOfBirth.Year;
 
         if (request.DateOfBirth > DateTime.UtcNow)
         {
-            return ValidationResult.Failure("Date of birth cannot be in the future");
+            errors.Add("Date of birth cannot be in the future");
         }
 
         if (age < minAge || age > maxAge)
         {
-            return ValidationResult.Failure($"Age must be between {minAge} and {maxAge} years");
+            errors.Add($"Age must be between {minAge} and {maxAge} years");
         }
 
         if (request.Password.Contains(request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            return ValidationResult.Failure("Password cannot contain email address");
+            errors.Add("Password cannot contain email address");
         }
 
-        return ValidationResult.Success();
+        return errors.Any() ? ValidationResult.Failure(errors) : ValidationResult.Success();
     }
 }
 
