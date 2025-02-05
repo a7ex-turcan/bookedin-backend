@@ -21,11 +21,16 @@ public class AuthController(
     {
         if (await userService.EmailExistsAsync(request.Email))
         {
-            return BadRequest("Email is already in use.");
+            return BadRequest(new { error = "Email is already in use." });
         }
 
-        await userService.CreateUserAsync(request);
-        return Ok("User registered successfully.");
+        var result = await userService.CreateUserAsync(request);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(new { error = result.Error });
+        }
+
+        return Ok(new { message = "User registered successfully." });
     }
 
     [HttpPost("login")]

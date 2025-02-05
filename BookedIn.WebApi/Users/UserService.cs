@@ -23,12 +23,12 @@ internal class UserService(
         return await context.Users.AnyAsync(u => u.Email == email);
     }
 
-    public async Task<bool> CreateUserAsync(SignUpRequest request)
+    public async Task<Result<bool>> CreateUserAsync(SignUpRequest request)
     {
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Error);
+            return Result<bool>.Failure(validationResult.Error!);
         }
 
         var user = new User
@@ -42,7 +42,7 @@ internal class UserService(
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        return true;
+        return Result<bool>.Success(true);
     }
 }
 
@@ -77,4 +77,26 @@ internal class SignUpRequestValidator
 
         return ValidationResult.Success();
     }
+}
+
+public class Result<T>
+{
+    public bool IsSuccess { get; }
+    public string? Error { get; }
+    public T? Value { get; }
+
+    private Result(T value)
+    {
+        IsSuccess = true;
+        Value = value;
+    }
+
+    private Result(string error)
+    {
+        IsSuccess = false;
+        Error = error;
+    }
+
+    public static Result<T> Success(T value) => new(value);
+    public static Result<T> Failure(string error) => new(error);
 }

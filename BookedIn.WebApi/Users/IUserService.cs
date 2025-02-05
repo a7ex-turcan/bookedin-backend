@@ -9,7 +9,7 @@ public interface IUserService
 {
     Task<User?> GetUserByEmailAsync(string email);
     Task<bool> EmailExistsAsync(string email);
-    Task<bool> CreateUserAsync(SignUpRequest request);
+    Task<Result<bool>> CreateUserAsync(SignUpRequest request);
 }
 // File: BookedIn.WebApi/Services/UserService.cs
 
