@@ -28,7 +28,7 @@ internal class UserService(
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
         {
-            return Result<bool>.Failure(string.Join(", ", validationResult.Errors));
+            return Result<bool>.Failure(validationResult.Errors);
         }
 
         var user = new User
@@ -92,22 +92,23 @@ internal class SignUpRequestValidator
 
 public class Result<T>
 {
-    public bool IsSuccess { get; }
-    public string? Error { get; }
+    public bool IsSuccess => !Errors.Any();
+    public IReadOnlyList<string> Errors { get; }
     public T? Value { get; }
 
     private Result(T value)
     {
-        IsSuccess = true;
+        Errors = Array.Empty<string>();
         Value = value;
     }
 
-    private Result(string error)
+    private Result(IEnumerable<string> errors)
     {
-        IsSuccess = false;
-        Error = error;
+        Errors = errors.ToList();
+        Value = default;
     }
 
     public static Result<T> Success(T value) => new(value);
-    public static Result<T> Failure(string error) => new(error);
+    public static Result<T> Failure(string error) => new(new[] { error });
+    public static Result<T> Failure(IEnumerable<string> errors) => new(errors);
 }

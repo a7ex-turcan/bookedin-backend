@@ -1,0 +1,2 @@
+namespace BookedIn.WebApi.Users;
+
