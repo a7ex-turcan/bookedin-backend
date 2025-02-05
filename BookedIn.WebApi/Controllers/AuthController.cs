@@ -18,26 +18,38 @@ public class AuthController(
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp(SignUpRequest request)
     {
-        if (await context.Users.AnyAsync(u => u.Email == request.Email))
+        if (await EmailExists(request.Email))
         {
             return BadRequest("Email is already in use.");
         }
 
-        var hashedPassword = passwordHasher.HashPassword(request.Password);
+        var user = CreateUser(request);
+        await SaveUser(user);
 
-        var user = new User
+        return Ok("User registered successfully.");
+    }
+
+    private async Task<bool> EmailExists(string email)
+    {
+        return await context.Users.AnyAsync(u => u.Email == email);
+    }
+
+    private User CreateUser(SignUpRequest request)
+    {
+        return new User
         {
             Email = request.Email,
             FullName = request.FullName,
-            Nickname = request.Nickname,
+            Nickname = request.Nickname ?? request.FullName,
             DateOfBirth = DateTime.SpecifyKind(request.DateOfBirth, DateTimeKind.Utc),
-            PasswordHash = hashedPassword
+            PasswordHash = passwordHasher.HashPassword(request.Password)
         };
+    }
 
+    private async Task SaveUser(User user)
+    {
         context.Users.Add(user);
         await context.SaveChangesAsync();
-
-        return Ok("User registered successfully.");
     }
 
     [HttpPost("login")]
