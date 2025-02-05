@@ -29,6 +29,7 @@ public class AuthController(
         {
             Email = request.Email,
             FullName = request.FullName,
+            Nickname = request.Nickname,
             DateOfBirth = DateTime.SpecifyKind(request.DateOfBirth, DateTimeKind.Utc),
             PasswordHash = hashedPassword
         };
