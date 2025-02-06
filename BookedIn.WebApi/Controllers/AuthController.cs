@@ -19,11 +19,6 @@ public class AuthController(
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp(SignUpRequest request)
     {
-        if (await userService.EmailExistsAsync(request.Email))
-        {
-            return BadRequest(new { errors = new[] { "Email is already in use." } });
-        }
-
         var result = await userService.CreateUserAsync(request);
         if (!result.IsSuccess)
         {

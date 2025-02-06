@@ -31,9 +31,15 @@ internal class UserService(
             return Result<bool>.Failure(validationResult.Errors);
         }
 
+        var normalizedEmail = request.Email.Trim().ToLower();
+        if (await EmailExistsAsync(normalizedEmail))
+        {
+            return Result<bool>.Failure("Email is already in use.");
+        }
+
         var user = new User
         {
-            Email = request.Email.Trim().ToLower(),
+            Email = normalizedEmail,
             FullName = request.FullName.Trim(),
             Nickname = (request.Nickname?.Trim() ?? request.FullName.Trim()),
             DateOfBirth = DateTime.SpecifyKind(request.DateOfBirth, DateTimeKind.Utc),
