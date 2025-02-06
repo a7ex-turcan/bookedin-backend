@@ -46,7 +46,7 @@ internal class UserService(
     }
 }
 
-internal record ValidationResult
+public record ValidationResult
 {
     public bool IsValid => !Errors.Any();
     public IReadOnlyList<string> Errors { get; }
@@ -56,13 +56,14 @@ internal record ValidationResult
         Errors = errors.ToList();
     }
 
-    public static ValidationResult Success() => new(Enumerable.Empty<string>());
-    public static ValidationResult Failure(string error) => new(new[] { error });
+    public static ValidationResult Success() => new([]);
+    
+    public static ValidationResult Failure(string error) => new([error]);
+    
     public static ValidationResult Failure(IEnumerable<string> errors) => new(errors);
 }
 
-
-internal class SignUpRequestValidator
+public class SignUpRequestValidator
 {
     public ValidationResult Validate(SignUpRequest request)
     {

@@ -1,15 +1,19 @@
+using System.ComponentModel;
 using BookedIn.WebApi.Models;
 using BookedIn.WebApi.Users;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookedIn.WebApi.Tests.Users;
 
 public class SignUpRequestValidatorTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private readonly SignUpRequestValidator _validator;
 
-    public SignUpRequestValidatorTests()
+    public SignUpRequestValidatorTests(ITestOutputHelper testOutputHelper)
     {
+        _testOutputHelper = testOutputHelper;
         _validator = new SignUpRequestValidator();
     }
 
@@ -19,20 +23,14 @@ public class SignUpRequestValidatorTests
     public void Validate_WithValidRequest_ReturnsSuccess()
     {
         // Arrange
-        var request = new SignUpRequest
-        {
-            Email = "test@example.com",
-            Password = "ValidPass123!",
-            FullName = "Test User",
-            DateOfBirth = DateTime.UtcNow.AddYears(-20)
-        };
+        var request = new SignUpRequest("test@example.com", "ValidPass123!", "Test User", DateTime.UtcNow.AddYears(-20), "password");
 
         // Act
         var result = _validator.Validate(request);
 
         // Assert
         Assert.True(result.IsValid);
-        Assert.Null(result.Error);
+        Assert.Empty(result.Errors);
     }
 
     [Fact]
@@ -41,20 +39,20 @@ public class SignUpRequestValidatorTests
     public void Validate_WithFutureDateOfBirth_ReturnsFailure()
     {
         // Arrange
-        var request = new SignUpRequest
-        {
-            Email = "test@example.com",
-            Password = "ValidPass123!",
-            FullName = "Test User",
-            DateOfBirth = DateTime.UtcNow.AddDays(1)
-        };
+       var request = new SignUpRequest(
+           "test@example.com",
+           "ValidPass123!",
+           "Test User",
+           DateTime.UtcNow.AddDays(1),
+           "password"
+       );
 
         // Act
         var result = _validator.Validate(request);
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal("Date of birth cannot be in the future", result.Error);
+        Assert.Equal("Date of birth cannot be in the future", result.Errors[0]);
     }
 
     [Theory]
@@ -64,21 +62,23 @@ public class SignUpRequestValidatorTests
     [InlineData(121, "Too old")]
     public void Validate_WithInvalidAge_ReturnsFailure(int age, string scenario)
     {
+        _testOutputHelper.WriteLine($"Scenario: {scenario}");
+        
         // Arrange
-        var request = new SignUpRequest
-        {
-            Email = "test@example.com",
-            Password = "ValidPass123!",
-            FullName = "Test User",
-            DateOfBirth = DateTime.UtcNow.AddYears(-age)
-        };
+        var request = new SignUpRequest(
+            "test@example.com",
+            "ValidPass123!",
+            "Test User",
+            DateTime.UtcNow.AddYears(-age),
+            "password"
+        );;
 
         // Act
         var result = _validator.Validate(request);
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal("Age must be between 13 and 120 years", result.Error);
+        Assert.Equal("Age must be between 13 and 120 years", result.Errors[0]);
     }
 
     [Fact]
@@ -87,20 +87,20 @@ public class SignUpRequestValidatorTests
     public void Validate_WithEmailInPassword_ReturnsFailure()
     {
         // Arrange
-        var request = new SignUpRequest
-        {
-            Email = "test@example.com",
-            Password = "MyTest@Example.comPassword",  // Email embedded within password with different casing
-            FullName = "Test User",
-            DateOfBirth = DateTime.UtcNow.AddYears(-20)
-        };
+       var request = new SignUpRequest(
+           "test@example.com",
+           "MyTest@Example.comPassword",  // Email embedded within password with different casing
+           "Test User",
+           DateTime.UtcNow.AddYears(-20),
+           "password"
+       );
 
         // Act
         var result = _validator.Validate(request);
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal("Password cannot contain email address", result.Error);
+        Assert.Equal("Password cannot contain email address", result.Errors[0]);
     }
 
     [Fact]
@@ -109,13 +109,13 @@ public class SignUpRequestValidatorTests
     public void Validate_WithMultipleInvalidFields_ReturnsAllErrors()
     {
         // Arrange
-        var request = new SignUpRequest
-        {
-            Email = "test@example.com",
-            Password = "test@example.com123", // Contains email
-            FullName = "Test User",
-            DateOfBirth = DateTime.UtcNow.AddYears(-121) // Too old
-        };
+        var request = new SignUpRequest(
+            "test@example.com",
+            "test@example.com123", // Contains email
+            "Test User",
+            DateTime.UtcNow.AddYears(-121),
+            "password"
+        );
 
         // Act
         var result = _validator.Validate(request);
@@ -123,7 +123,7 @@ public class SignUpRequestValidatorTests
         // Assert
         Assert.False(result.IsValid);
         Assert.Equal(2, result.Errors.Count);
-        Assert.Contains("Age must be between 13 and 120 years", result.Errors);
-        Assert.Contains("Password cannot contain email address", result.Errors);
+        Assert.Contains("Age must be between 13 and 120 years", result.Errors[0]);
+        Assert.Contains("Password cannot contain email address", result.Errors[0]);
     }
 }
